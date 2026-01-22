@@ -4,6 +4,7 @@ import com.eventsio.api.domain.events.Event;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Table(name = "coupon")
@@ -19,7 +20,7 @@ public class Coupon {
 
     private String code;
     private Integer discount;
-    private Data valid;
+    private Date valid;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
