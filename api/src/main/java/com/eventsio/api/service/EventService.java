@@ -3,13 +3,13 @@ package com.eventsio.api.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.eventsio.api.domain.events.Event;
 import com.eventsio.api.domain.events.EventRequestDTO;
+import com.eventsio.api.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
@@ -23,6 +23,9 @@ public class EventService {
     @Autowired
     private AmazonS3 s3Client;
 
+    @Autowired
+    private EventRepository  repository;
+
     public Event createEvent(EventRequestDTO data) {
         String imgUrl = null;
 
@@ -35,6 +38,9 @@ public class EventService {
         newEvent.setEventUrl(data.eventUrl());
         newEvent.setDate(new Date(data.date()));
         newEvent.setImgUrl(imgUrl);
+        newEvent.setRemote(data.remote());
+
+        repository.save(newEvent);
 
         return newEvent;
     }
@@ -48,8 +54,8 @@ public class EventService {
             file.delete();
             return s3Client.getUrl(bucketName, fileName).toString();
         } catch (Exception e) {
-            System.out.println("Error ao subir o aquivo" + e.getMessage());
-            return null;
+            System.out.println("Error ao subir o aquivo " + e.getMessage());
+            return "";
         }
     }
 
