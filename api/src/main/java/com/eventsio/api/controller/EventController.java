@@ -2,11 +2,14 @@ package com.eventsio.api.controller;
 
 import com.eventsio.api.domain.events.Event;
 import com.eventsio.api.domain.events.EventRequestDTO;
+import com.eventsio.api.domain.events.EventResponseDTO;
 import com.eventsio.api.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/event")
@@ -26,6 +29,12 @@ public class EventController {
         EventRequestDTO eventRequestDTO = new EventRequestDTO(title, description, date, city, state, remote, eventUrl, image);
         Event newEvent = this.eventService.createEvent(eventRequestDTO);
         return ResponseEntity.ok(newEvent);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EventResponseDTO>> getEvents(@RequestParam(defaultValue = "0") int page, @RequestParam(value = "10") int size) {
+        List<EventResponseDTO> allEvents = this.eventService.getEvents(page, size);
+        return ResponseEntity.ok(allEvents);
     }
 
 }
